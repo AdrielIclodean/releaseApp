@@ -28,7 +28,7 @@ public class ZipUtils {
 		ZipInputStream zis = new ZipInputStream(in, StandardCharsets.UTF_8);
 		ZipEntry zipEntry = zis.getNextEntry();
 
-		while (zipEntry != null) {zipEntry.getName().equals(entry);
+		while (zipEntry != null) {
 			if (zipEntry.toString().equals(entry)) {
 				// quirl.war
 				return zis;
