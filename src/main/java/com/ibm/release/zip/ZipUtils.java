@@ -21,13 +21,13 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.PropertiesConfigurationLayout;
 
 public class ZipUtils {
-	
+
 	public static final String SUFFIX = "_temp";
-	
-	public InputStream getInputStreamFactory(InputStream in, String entry) throws Exception {
+
+	public InputStream getInputStreamFactory(InputStream in, String entry) throws IOException {
 		ZipInputStream zis = new ZipInputStream(in, StandardCharsets.UTF_8);
 		ZipEntry zipEntry = zis.getNextEntry();
-		
+
 		while (zipEntry != null) {
 			if (zipEntry.toString().equals(entry)) {
 				// quirl.war
@@ -37,46 +37,46 @@ public class ZipUtils {
 		}
 		throw new IllegalStateException("No entry '" + entry + "' found");
 	}
-	
-	public void createFolderStructure(String releaseNumber, List<String> earPaths, String filename) throws IOException {	
-		for (String path: earPaths) {
+
+	public void createFolderStructure(List<String> earPaths, String filename) throws IOException {
+		for (String path : earPaths) {
 			Files.createDirectories(Paths.get(path));
 			Files.copy(Paths.get(filename), Paths.get(path + "/" + getSuffixName(filename)), REPLACE_EXISTING);
 		}
 	}
-	
-	public void editPropertiesFile(File propertiesFile, Map<String, String> properties) throws Exception{
+
+	public void editPropertiesFile(File propertiesFile, Map<String, String> properties) throws Exception {
 		PropertiesConfiguration config = new PropertiesConfiguration();
 		PropertiesConfigurationLayout layout = new PropertiesConfigurationLayout();
 		layout.load(config, new InputStreamReader(new FileInputStream(propertiesFile)));
-		
-		for(Map.Entry<String,String> entry : properties.entrySet()) {
+
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			config.setProperty(entry.getKey(), entry.getValue());
 		}
 		layout.save(config, new FileWriter(propertiesFile.getPath()));
 
 	}
-	
+
 	private String getSuffixName(String filename) {
 		if (filename.endsWith("ear")) {
 			return filename.substring(0, filename.length() - 4) + SUFFIX + ".ear";
 		}
 		return filename;
 	}
-	
-	public void addToZipFile(File file, ZipOutputStream zos, ZipEntry zipEntry) throws IOException {
-		FileInputStream fis = new FileInputStream(file);
-		zos.putNextEntry(zipEntry);
 
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zos.write(bytes, 0, length);
+	public void addToZipFile(File file, ZipOutputStream zos, ZipEntry zipEntry) throws IOException {
+		try (FileInputStream fis = new FileInputStream(file)) {
+			zos.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while ((length = fis.read(bytes)) >= 0) {
+				zos.write(bytes, 0, length);
+			}
+			zos.closeEntry();
 		}
-		zos.closeEntry();
-		fis.close();
 	}
-	
+
 	public void addToZipFile(ZipInputStream zis, ZipOutputStream zos, ZipEntry zipEntry) throws IOException {
 		ZipEntry newZipEntry = new ZipEntry(zipEntry.getName());
 		zos.putNextEntry(newZipEntry);
@@ -87,5 +87,5 @@ public class ZipUtils {
 		}
 		zos.closeEntry();
 	}
-	
+
 }
