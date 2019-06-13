@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +44,13 @@ public class QuirlDatenpflege {
 	public void createRelease() throws Exception {
 		ZipUtils zu = new ZipUtils();
 		List<String> foldersToFillIn = createDatenpflegeFolderStructure();
-		zu.createFolderStructure(foldersToFillIn, QUIRL_DATENPFLEGE_EAR);
-
+		try {
+			zu.createFolderStructure(foldersToFillIn, QUIRL_DATENPFLEGE_EAR);
+		} catch (NoSuchFileException e) {
+			System.err.println("The file " + QUIRL_DATENPFLEGE_EAR + " was not found in the current directory");
+			return;
+		}
+		
 		final String q2dpFileName = "q2dp.properties";
 
 		for (String path : foldersToFillIn) {
@@ -52,12 +58,15 @@ public class QuirlDatenpflege {
 
 			InputStream warIs = zu.getInputStreamFactory(new FileInputStream(quirlDatenpflegeZipPath), QUIRL_WAR);
 
-			final String q2dpWarPath = "WEB-INF" + PATH + "classes" + PATH + q2dpFileName;
+			final String q2dpWarPath = "WEB-INF/classes/" + q2dpFileName;
 			propertiesFileToEdit = new File(q2dpFileName);
 			propertiesFileToEdit.deleteOnExit();
 
 			try (InputStream q2dpInput = zu.getInputStreamFactory(warIs, q2dpWarPath)) {
 				changeRequiredProperties(zu, path, q2dpInput);
+			} catch (IllegalStateException e) {
+				System.err.println("Problem with " + QUIRL_WAR  + " file: " + e.getMessage());
+				return;
 			}
 
 			File quirlWar = new File(path + PATH + QUIRL_WAR);
@@ -103,6 +112,7 @@ public class QuirlDatenpflege {
 
 			deleteTempFiles(path);
 		}
+		
 	}
 
 	private void changeRequiredProperties(ZipUtils zu, String path, InputStream q2dpInput) throws Exception {
