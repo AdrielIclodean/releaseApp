@@ -1,4 +1,4 @@
-package com.ibm.release;
+package com.ibm.release.zip;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
