@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public class QuirlDatenpflege {
 			System.err.println("The file " + QUIRL_DATENPFLEGE_EAR + " was not found in the current directory");
 			return;
 		}
-		
+
 		final String q2dpFileName = "q2dp.properties";
 
 		for (String path : foldersToFillIn) {
@@ -65,7 +66,7 @@ public class QuirlDatenpflege {
 			try (InputStream q2dpInput = zu.getInputStreamFactory(warIs, q2dpWarPath)) {
 				changeRequiredProperties(zu, path, q2dpInput);
 			} catch (IllegalStateException e) {
-				System.err.println("Problem with " + QUIRL_WAR  + " file: " + e.getMessage());
+				System.err.println("Problem with " + QUIRL_WAR + " file: " + e.getMessage());
 				return;
 			}
 
@@ -94,7 +95,7 @@ public class QuirlDatenpflege {
 				ZipEntry zipEntry = zis.getNextEntry();
 
 				try (ZipOutputStream newEar = new ZipOutputStream(
-						new FileOutputStream(new File(path + PATH + QUIRL_DATENPFLEGE_EAR)))) {
+						new FileOutputStream(Paths.get(path, QUIRL_DATENPFLEGE_EAR).toFile()))) {
 					while (zipEntry != null) {
 						if (!(zipEntry.toString().equals(QUIRL_WAR))) {
 							zu.addToZipFile(zis, newEar, zipEntry);
@@ -112,7 +113,7 @@ public class QuirlDatenpflege {
 
 			deleteTempFiles(path);
 		}
-		
+
 	}
 
 	private void changeRequiredProperties(ZipUtils zu, String path, InputStream q2dpInput) throws Exception {
@@ -125,22 +126,22 @@ public class QuirlDatenpflege {
 
 		Map<String, String> properties = new HashMap<>();
 
-		if (path.endsWith(PATH + "QS" + PATH + DMZ)) {
+		if (path.endsWith(Paths.get("QS", DMZ).toString())) {
 			properties.put(MAIL_SMTP_HOST_PROP, "mailgate.qs2x.vwg");
 			properties.put(QUIRL_PORTAL_URL_PROP, "https://inawasp52.wob.vw.vwg/quirl/q2dp");
 		}
 
-		if (path.endsWith(PATH + "QS" + PATH + INTRANET)) {
+		if (path.endsWith(Paths.get("QS",INTRANET).toString())) {
 			properties.put(MAIL_SMTP_HOST_PROP, "mailgate.vw.vwg");
 			properties.put(QUIRL_PORTAL_URL_PROP, "https://inawasp52.wob.vw.vwg/quirl/q2dp");
 		}
 
-		if (path.endsWith(PATH + "Prod" + PATH + DMZ)) {
+		if (path.endsWith(Paths.get("Prod" ,DMZ).toString())) {
 			properties.put(MAIL_SMTP_HOST_PROP, "mailgate.b2x.vwg");
 			properties.put(QUIRL_PORTAL_URL_PROP, "https://inawl067t01.wob.vw.vwg:4432/quirl/q2dp");
 		}
 
-		if (path.endsWith(PATH + "Prod" + PATH + INTRANET)) {
+		if (path.endsWith(Paths.get("Prod",INTRANET).toString())) {
 			properties.put(MAIL_SMTP_HOST_PROP, "mailgate.vw.vwg");
 			properties.put(QUIRL_PORTAL_URL_PROP, "https://inawl067t01.wob.vw.vwg:4432/quirl/q2dp");
 		}
@@ -166,11 +167,11 @@ public class QuirlDatenpflege {
 		List<String> requiredFolders = new ArrayList<>();
 
 		System.out.println("Will create the release folder here: " + currentDir);
-		
-		requiredFolders.add(currentDir + PATH + RELEASES + PATH + releaseNumber + PATH + "QS" + PATH + DMZ);
-		requiredFolders.add(currentDir + PATH + RELEASES + PATH + releaseNumber + PATH + "QS" + PATH + INTRANET);
-		requiredFolders.add(currentDir + PATH + RELEASES + PATH + releaseNumber + PATH + "Prod" + PATH + DMZ);
-		requiredFolders.add(currentDir + PATH + RELEASES + PATH + releaseNumber + PATH + "Prod" + PATH + INTRANET);
+
+		requiredFolders.add(Paths.get(currentDir, RELEASES, releaseNumber, "QS", DMZ).toString());
+		requiredFolders.add(Paths.get(currentDir, RELEASES, releaseNumber, "QS", INTRANET).toString());
+		requiredFolders.add(Paths.get(currentDir, RELEASES, releaseNumber, "Prod", DMZ).toString());
+		requiredFolders.add(Paths.get(currentDir, RELEASES, releaseNumber, "Prod", INTRANET).toString());
 
 		return requiredFolders;
 	}
