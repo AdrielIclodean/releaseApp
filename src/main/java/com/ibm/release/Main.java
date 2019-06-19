@@ -13,17 +13,21 @@ public class Main {
 		System.out.println("Please choose project: (1 - Quirl Datenpflege; 2 - Quirl Import)");
 		int projectName = scan.nextInt();
 
+		String releaseName;
 		while (projectName != -1) {
 			switch (projectName) {
 			case QUIRL_DATENPFLEGE:
 				System.out.println("Please enter Quirl Datenpflege release name: ");
 				Scanner datenpflegeScan = new Scanner(System.in);
-				String releaseName = datenpflegeScan.nextLine();
+				releaseName = datenpflegeScan.nextLine();
 				new QuirlDatenpflege(releaseName).createRelease();
 				projectName = -1;
 				break;
 			case QUIRL_IMPORT:
-				System.out.println("Not implemented yet");
+				System.out.println("Please enter Quirl Import release name: ");
+				Scanner importScan = new Scanner(System.in);
+				releaseName = importScan.nextLine();
+				new QuirlImport(releaseName).createRelease();
 				projectName = -1;
 				break;
 			case -1:

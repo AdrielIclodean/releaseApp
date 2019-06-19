@@ -24,7 +24,7 @@ public class QuirlDatenpflege {
 
 	private static final String DMZ = "DMZ";
 	private static final String INTRANET = "Intranet";
-	private static final String RELEASES = "Releases";
+	private static final String RELEASES = "DatenpflegeReleases";
 	private static final String MAIL_SMTP_HOST_PROP = "mail.smtp.host";
 	private static final String QUIRL_PORTAL_URL_PROP = "quirl.portal.url";
 	private static final String QUIRL_DATENPFLEGE = "quirl_datenpflege";
