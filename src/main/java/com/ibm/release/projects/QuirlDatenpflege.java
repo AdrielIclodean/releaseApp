@@ -48,6 +48,9 @@ public class QuirlDatenpflege extends ReleaseCreation {
 		final String q2dpFileName = "q2dp.properties";
 
 		for (Path path : foldersToFillIn) {
+			
+			System.out.println("Processing release folder " + path.toString());
+			
 			String quirlDatenpflegeZipPath = path + PATH + QUIRL_DATENPFLEGE + SUFFIX + EAR;
 
 			InputStream warIs = zu.getInputStreamFactory(new FileInputStream(quirlDatenpflegeZipPath), QUIRL_WAR);
