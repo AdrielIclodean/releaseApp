@@ -4,11 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -54,7 +60,7 @@ public class QuirlDatenpflege extends ReleaseCreation {
 			String quirlDatenpflegeZipPath = path + PATH + QUIRL_DATENPFLEGE + SUFFIX + EAR;
 
 			InputStream warIs = zu.getInputStreamFactory(new FileInputStream(quirlDatenpflegeZipPath), QUIRL_WAR);
-
+			
 			final String q2dpWarPath = "WEB-INF/classes/" + q2dpFileName;
 			propertiesFileToEdit = new File(q2dpFileName);
 			propertiesFileToEdit.deleteOnExit();
@@ -84,10 +90,15 @@ public class QuirlDatenpflege extends ReleaseCreation {
 						}
 						zipEntry = zis.getNextEntry();
 					}
+					
+					writeBuildPropertiesToWar(newWar, zu);
+				} catch (Exception e) {
+					System.err.println("Something happend " + e.getMessage());
 				}
 
 			}
-
+			warIs.close();
+			
 			try (ZipInputStream zis = new ZipInputStream(new FileInputStream(quirlDatenpflegeZipPath))) {
 				ZipEntry zipEntry = zis.getNextEntry();
 
@@ -105,12 +116,39 @@ public class QuirlDatenpflege extends ReleaseCreation {
 
 			}
 
-			warIs.close();
+			
 
 			deleteTempFiles(path);
 		}
 		return true;
 
+	}
+
+	private void writeBuildPropertiesToWar(ZipOutputStream zos, ZipUtils zipUtils) throws Exception {
+		File q2dpBuildProperties = new File("q2dp-build.properties");
+		q2dpBuildProperties.createNewFile();
+
+		Map<String, String> properties = new LinkedHashMap<>();
+		properties.put("build.number", buildNumber);
+		DateTimeFormatter formatter  = DateTimeFormatter.ofPattern("dd.MM.YYYY hh:mm:ss");
+		properties.put("build.date", LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(formatter));
+		properties.put("build.version", buildVersion);
+		
+		zipUtils.addPropertiesToFile(q2dpBuildProperties, properties);
+		
+		FileInputStream fis = new FileInputStream(q2dpBuildProperties);
+		ZipEntry zipEntry = new ZipEntry("WEB-INF\\classes\\q2dp-build.properties");
+		zos.putNextEntry(zipEntry);
+
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zos.write(bytes, 0, length);
+		}
+		fis.close();
+		zos.closeEntry();
+		
+		Files.delete(q2dpBuildProperties.toPath());
 	}
 
 	private void changeRequiredProperties(ZipUtils zu, Path path, InputStream q2dpInput) throws Exception {

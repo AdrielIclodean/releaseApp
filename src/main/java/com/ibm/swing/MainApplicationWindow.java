@@ -127,6 +127,7 @@ public class MainApplicationWindow {
 				processText.setText("");
 			
 				if(!validateFields()) {
+					System.err.println("Release should be in form: dd-ddd");
 					return;
 				}
 				
@@ -157,7 +158,8 @@ public class MainApplicationWindow {
 			}
 
 			private boolean validateFields() {
-				return !releaseName.getText().isEmpty();
+				return !releaseName.getText().isEmpty() &&
+						releaseName.getText().matches("\\d\\d-\\d\\d\\d");
 			}
 		});
 		

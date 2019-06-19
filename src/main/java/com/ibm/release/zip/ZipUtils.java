@@ -2,12 +2,14 @@ package com.ibm.release.zip;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -43,6 +45,16 @@ public class ZipUtils {
 
 	}
 
+
+	public void addPropertiesToFile(File propertiesFile, Map<String, String> properties) throws Exception {
+		Properties prop = new Properties();
+
+		properties.forEach((key, val) -> prop.setProperty(key, val));
+		try (FileOutputStream fosFileOutputStream = new FileOutputStream(propertiesFile)) {
+			prop.store(fosFileOutputStream, null);			
+		} 
+
+	}
 
 	public void addToZipFile(File file, ZipOutputStream zos, ZipEntry zipEntry) throws IOException {
 		try (FileInputStream fis = new FileInputStream(file)) {
