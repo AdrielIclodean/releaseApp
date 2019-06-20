@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class ReleaseCreation {
+public abstract class Release {
 
 	protected String releaseNumber;
 
@@ -36,7 +36,7 @@ public abstract class ReleaseCreation {
 	 * 
 	 * @param releaseNumber - Should be like dd-ddd buildVersion-buildNumber
 	 */
-	public ReleaseCreation(String releaseNumber) {
+	public Release(String releaseNumber) {
 		this.releaseNumber = releaseNumber;
 
 		String currentDir = System.getProperty("user.dir");

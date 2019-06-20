@@ -6,9 +6,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.release.ReleaseCreation;
+import com.ibm.release.Release;
 
-public class QuirlImport extends ReleaseCreation {
+public class QuirlImport extends Release {
 
 	private static final String DMZ = "DMZ";
 	private static final String GAZ = "GAZ";

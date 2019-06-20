@@ -23,10 +23,10 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 
-import com.ibm.release.ReleaseCreation;
+import com.ibm.release.Release;
 import com.ibm.release.zip.ZipUtils;
 
-public class QuirlDatenpflege extends ReleaseCreation {
+public class QuirlDatenpflege extends Release {
 
 	private static final String DMZ = "DMZ";
 	private static final String INTRANET = "Intranet";
