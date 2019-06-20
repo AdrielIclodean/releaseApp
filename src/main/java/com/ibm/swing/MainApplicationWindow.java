@@ -18,6 +18,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.ibm.release.ProjectType;
+import com.ibm.release.ReleaseFactory;
 import com.ibm.release.projects.QuirlDatenpflege;
 import com.ibm.release.projects.QuirlImport;
 
@@ -136,15 +138,18 @@ public class MainApplicationWindow {
 				
 				try {
 					boolean withSuccess = false;
+					ReleaseFactory releaseFactory = new ReleaseFactory();
+					
+
 					switch (releaseTypeText) {
 					case Q_DATENPFLEGE:
-						withSuccess = new QuirlDatenpflege(releaseNameText).createRelease();
+						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_DATENPFLEGE, releaseNameText).createRelease();
 						break;
 					case Q_IMPORT:
-						withSuccess = new QuirlImport(releaseNameText).createRelease();
+						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_IMPORT, releaseNameText).createRelease();
 						break;
 					}
-
+					
 					if (withSuccess)
 						System.out.println("Well done!");
 					else {
