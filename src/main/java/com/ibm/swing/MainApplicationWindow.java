@@ -143,10 +143,10 @@ public class MainApplicationWindow {
 
 					switch (releaseTypeText) {
 					case Q_DATENPFLEGE:
-						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_DATENPFLEGE, releaseNameText).createRelease();
+						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_DATENPFLEGE, releaseNameText).execute();
 						break;
 					case Q_IMPORT:
-						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_IMPORT, releaseNameText).createRelease();
+						withSuccess = releaseFactory.createRelease(ProjectType.QUIRL_IMPORT, releaseNameText).execute();
 						break;
 					}
 					

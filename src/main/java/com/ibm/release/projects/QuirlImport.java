@@ -38,7 +38,7 @@ public class QuirlImport extends Release {
 	}
 
 	@Override
-	public boolean createRelease() throws Exception {
+	public boolean execute() throws Exception {
 		List<Path> foldersToFillIn = createImportFolderStructure();
 
 		try {

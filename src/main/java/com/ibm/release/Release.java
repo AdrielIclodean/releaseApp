@@ -53,7 +53,7 @@ public abstract class Release {
 	 * @return true if everything went fine
 	 * @throws Exception
 	 */
-	public abstract boolean createRelease() throws Exception;
+	public abstract boolean execute() throws Exception;
 
 	public void deleteTempFiles(Path folder) throws IOException {
 		File files = folder.toFile();

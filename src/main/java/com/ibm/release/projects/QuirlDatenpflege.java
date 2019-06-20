@@ -40,7 +40,7 @@ public class QuirlDatenpflege extends Release {
 
 	}
 
-	public boolean createRelease() throws Exception {
+	public boolean execute() throws Exception {
 		ZipUtils zu = new ZipUtils();
 		List<Path> foldersToFillIn = createDatenpflegeFolderStructure();
 		try {
